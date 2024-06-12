@@ -1,7 +1,11 @@
 package br.senai.sc.demo.controller;
 
 import br.senai.sc.demo.model.Usuario;
+import br.senai.sc.demo.service.UsuarioService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 //Determina que a classe sera gerenciada pelo Spring facilitando a idetificação dos endpoints
 //Endpoints são interfaces de comunicação
@@ -12,18 +16,25 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/usuario")
 
 public class UsuarioController {
+    //Composição (conceito de POO)
+    public UsuarioController(UsuarioService usuarioService){
+        this.usuarioService = usuarioService;
+    }
 
     //Get e delete não podem ter body
     //Get ira retornar os objetos podendo ser um objeto (@GetMapping("/{id}")), uma lista filtrada de objeto (@GetMapping("/{nome da lista}")) ou a lista inteira (@GetMapping)
-//    @GetMapping
-//    public String endpointGet(){
-//        return "GET";
-//    }
+    @GetMapping("/{id}")
+    public Usuario buscarUsuario(@PathVariable Integer id){
+        return usuarioService.buscarUsuario(id);
+    }
 
+//    @Autowired se não possuir construtor (Agregação em conceito de POO)
+    private final UsuarioService usuarioService;
     //Receber as informações e salvar em algum lugar
     // RequestBody informação bruta que estamos recebendo
     @PostMapping
     public String cadatroUsuario(@RequestBody Usuario usuario){
+        usuarioService.cadastroUsuario(usuario);
         return "Olá " + usuario.getNome() + ".\n" + usuario;
     }
 
